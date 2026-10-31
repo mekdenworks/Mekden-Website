@@ -21,7 +21,7 @@ const STORE_CONFIG = {
   salePrice: 149,
   upiId: "", // Example format only: name@bank — add your verified UPI ID here.
   payeeName: "Mekden Works",
-  instagramUrl: "https://www.instagram.com/",
+  instagramUrl: "https://www.instagram.com/mekdenworks/",
   contactEmail: "",
 };
 
@@ -34,6 +34,13 @@ function App() {
   const [orderName, setOrderName] = useState("");
   const [orderEmail, setOrderEmail] = useState("");
   const [orderRef, setOrderRef] = useState("");
+  const [reviewName, setReviewName] = useState("");
+  const [reviewText, setReviewText] = useState("");
+  const [reviewRating, setReviewRating] = useState("5");
+  const [reviews, setReviews] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("mekden-community-feedback") || "[]") as { name: string; text: string; rating: number; date: string }[]; }
+    catch { return []; }
+  });
 
   const closeMenu = () => setMenuOpen(false);
   const scrollTo = (id: string) => {
@@ -53,18 +60,21 @@ function App() {
     setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
   };
 
-  const filesReady = PRODUCT_FILES.every((item) =>
-    // Static hosting cannot inspect file existence in the browser; files are enabled
-    // after the owner uploads them to public/products.
-    item.file.length > 0
-  );
+  const submitReview = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const next = [{ name: reviewName.trim(), text: reviewText.trim(), rating: Number(reviewRating), date: new Date().toLocaleDateString("en-IN") }, ...reviews];
+    setReviews(next);
+    localStorage.setItem("mekden-community-feedback", JSON.stringify(next));
+    setReviewName(""); setReviewText(""); setReviewRating("5");
+  };
 
   return (
     <div className="site-shell">
-      <div className="announcement">A practical toolkit for creators <span>•</span> One-time price ₹149</div>
+      <div className="announcement">MEKDEN WORKS <span>•</span> IDEAS INTO IMPACT</div>
       <header className="header">
         <a className="brand" href="#home" aria-label="Mekden Works home">
-          <img src="/mekden-logo.png" alt="Mekden Works — Ideas, Products, Impact" />
+          <img src="/mekden-logo.png" alt="Mekden Works monogram" />
+          <span className="brand-name">MEKDEN <b>WORKS</b></span>
         </a>
         <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle navigation">
           {menuOpen ? <X /> : <Menu />}
@@ -95,7 +105,7 @@ function App() {
             <div className="art-card art-card-back"><span>MEKDEN</span><small>CREATOR TOOLKIT / 2026</small></div>
             <div className="art-card art-card-front">
               <div className="art-top"><span>MW / 001</span><Sparkles size={17} /></div>
-              <div className="art-monogram">M<span>W</span></div>
+              <img className="hero-monogram" src="/mekden-monogram.png" alt="Mekden Works monogram" />
               <div className="art-title">CREATOR<br /><b>STARTER PACK</b></div>
               <div className="art-bottom"><span>IDEAS → PRODUCTS → IMPACT</span><span>01—07</span></div>
             </div>
@@ -119,7 +129,7 @@ function App() {
             <div className="product-visual">
               <div className="product-visual-label">MEKDEN WORKS / DIGITAL COLLECTION</div>
               <div className="book-mock">
-                <div className="book-logo">M<span>W</span></div>
+                <img className="book-monogram" src="/mekden-monogram.png" alt="Mekden Works monogram" />
                 <div className="book-rule" />
                 <div className="book-name">CREATOR<br /><b>STARTER PACK</b></div>
                 <div className="book-foot">7 RESOURCES <span>•</span> DIGITAL EDITION</div>
@@ -135,7 +145,6 @@ function App() {
                 <strong>₹{STORE_CONFIG.salePrice}</strong>
                 <span className="save-pill">YOU SAVE 50%</span>
               </div>
-              <p className="price-note">One-time payment. No subscription.</p>
               <button className="button button-gold buy-button" onClick={startCheckout}>Get instant access <ArrowRight size={17} /></button>
               <div className="secure-note"><ShieldCheck size={16} /> Delivery after payment verification</div>
               <div className="included-title">WHAT'S INCLUDED <span>07 FILES</span></div>
@@ -144,7 +153,7 @@ function App() {
                   <div className="file-row" key={item.file}>
                     <span className="file-number">{String(index + 1).padStart(2, "0")}</span>
                     <div><b>{item.name}</b><small>{item.detail}</small></div>
-                    <span className="pdf-tag">PDF</span>
+                    <img className="file-monogram" src="/mekden-monogram.png" alt="" />
                   </div>
                 ))}
               </div>
@@ -166,8 +175,28 @@ function App() {
         </section>
 
         <section className="about-section section-pad" id="about">
-          <div className="about-mark">MW<span>.</span></div>
+          <div className="about-mark"><img src="/mekden-monogram.png" alt="Mekden Works monogram" /></div>
           <div className="about-copy"><div className="eyebrow"><span className="eyebrow-line" /> ABOUT THE BRAND</div><h2>Ideas.<br /><em>Made useful.</em></h2><p>Mekden Works is built around a simple belief: good ideas deserve practical execution. We create accessible digital products that help people plan, create and move forward with more clarity.</p><div className="signature">MEKDEN WORKS <span>IDEAS → PRODUCTS → IMPACT</span></div></div>
+        </section>
+
+        <section className="reviews-section section-pad" id="reviews">
+          <div className="section-heading">
+            <div><div className="eyebrow"><span className="eyebrow-line" /> COMMUNITY FEEDBACK</div><h2>Thoughts from<br /><em>the community.</em></h2></div>
+            <p>Have you used the Creator Starter Pack? Share honest feedback. Reviews submitted here are labelled as unverified until checked against an order.</p>
+          </div>
+          <div className="reviews-layout">
+            <form className="review-form" onSubmit={submitReview}>
+              <h3>Write a review</h3>
+              <label>Your name<input required maxLength={40} value={reviewName} onChange={(e) => setReviewName(e.target.value)} placeholder="Your name" /></label>
+              <label>Your rating<select value={reviewRating} onChange={(e) => setReviewRating(e.target.value)}><option value="5">5 — Excellent</option><option value="4">4 — Good</option><option value="3">3 — Okay</option><option value="2">2 — Could be better</option><option value="1">1 — Not satisfied</option></select></label>
+              <label>Your feedback<textarea required minLength={8} maxLength={500} value={reviewText} onChange={(e) => setReviewText(e.target.value)} placeholder="Tell others what you genuinely thought..." rows={4} /></label>
+              <button className="button button-dark" type="submit">Submit feedback <ArrowRight size={16} /></button>
+              <small>Feedback is saved in this browser only. It is not automatically published to other visitors.</small>
+            </form>
+            <div className="review-list">
+              {reviews.length === 0 ? <div className="review-empty"><div className="review-stars">★★★★★</div><h3>Be the first to share feedback.</h3><p>No customer reviews have been published yet. We won't display made-up testimonials.</p></div> : reviews.map((review, index) => <article className="review-card" key={`${review.date}-${index}`}><div className="review-stars">{"★".repeat(review.rating)}{"☆".repeat(5-review.rating)}</div><p>“{review.text}”</p><div className="review-meta"><b>{review.name}</b><span>{review.date} · Unverified feedback</span></div></article>)}
+            </div>
+          </div>
         </section>
 
         <section className="faq-section section-pad" id="faq">
@@ -190,8 +219,8 @@ function App() {
       </main>
 
       <footer className="footer">
-        <div className="footer-brand"><img src="/mekden-logo.png" alt="Mekden Works" /><p>Ideas → Products → Impact.</p></div>
-        <div className="footer-links"><a href="#product">Products</a><a href="#about">About</a><a href="#faq">FAQ</a><a href={STORE_CONFIG.instagramUrl} target="_blank" rel="noreferrer"><Instagram size={15} /> Instagram</a></div>
+        <div className="footer-brand"><div className="footer-brand-lockup"><img src="/mekden-logo.png" alt="Mekden Works monogram" /><b>MEKDEN WORKS</b></div><p>Ideas → Products → Impact.</p></div>
+        <div className="footer-links"><a href="#product">Products</a><a href="#about">About</a><a href="#reviews">Reviews</a><a href="#faq">FAQ</a><a href={STORE_CONFIG.instagramUrl} target="_blank" rel="noreferrer"><Instagram size={15} /> Instagram</a></div>
         <div className="footer-bottom"><span>© {new Date().getFullYear()} Mekden Works. All rights reserved.</span><span>Built with purpose.</span></div>
       </footer>
 
