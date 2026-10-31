@@ -39,8 +39,7 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 .art-card-back small{font:8px 'DM Sans';letter-spacing:.18em;margin-top:8px}
 .art-card-front{background:linear-gradient(145deg,#fff,#f1eee8);border:1px solid #d6c5a1;transform:rotate(-7deg);display:flex;flex-direction:column;justify-content:space-between}
 .art-top,.art-bottom{display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.14em;color:#8a672f}
-.art-monogram{font-family:'Playfair Display';font-size:85px;line-height:1;text-align:center;color:#171717;text-shadow:2px 3px #d4a34c}
-.art-monogram span{color:#bd8a36}
+.hero-monogram{width:190px;height:145px;object-fit:contain;align-self:center;mix-blend-mode:multiply}
 .art-title{font-size:23px;line-height:1.1;letter-spacing:.04em}
 .art-title b{font-size:19px;color:#a87825}
 .art-bottom{font-size:6px}
@@ -59,8 +58,7 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 .product-visual:after{width:530px;height:530px}
 .product-visual-label{position:absolute;top:25px;left:25px;font-size:8px;letter-spacing:.17em;color:#8b795e}
 .book-mock{width:260px;height:370px;z-index:1;background:linear-gradient(140deg,#191919,#30302e);color:#eee7d9;padding:25px;box-shadow:18px 22px 35px #0003;display:flex;flex-direction:column;justify-content:space-between;transform:rotate(-5deg);border-left:7px solid #9b702c}
-.book-logo{font-family:'Playfair Display';font-size:70px;text-align:center;color:#d2a34d;text-shadow:2px 2px #000}
-.book-logo span{color:#fff}
+.book-monogram{width:170px;height:120px;object-fit:contain;align-self:center;background:#fff;border-radius:4px;padding:8px}
 .book-rule{height:1px;background:linear-gradient(90deg,transparent,#d7ac60,transparent)}
 .book-name{font-size:26px;line-height:1.1;letter-spacing:.05em}
 .book-name b{color:#d8ad64;font-size:22px}
@@ -85,7 +83,7 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 .file-row>div{flex:1}
 .file-row b{font-size:11px;display:block;font-weight:600}
 .file-row small{display:block;color:#888;font-size:9px;margin-top:4px;line-height:1.5}
-.pdf-tag{font-size:8px;color:#9b712f;border:1px solid #e2d4bb;padding:5px 7px}
+.file-monogram{width:34px;height:30px;object-fit:contain;mix-blend-mode:multiply;flex:none}
 .benefits-section{background:#151515;color:#fff}
 .eyebrow-light{color:#d2ad6c}
 .benefits-heading{display:flex;justify-content:space-between;align-items:end;gap:40px;margin:20px 0 65px}
@@ -98,7 +96,7 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 .benefit-grid h3{font-family:'Playfair Display';font-size:19px;font-weight:500;margin:24px 0 10px}
 .benefit-grid p{font-size:10px;color:#aaa;line-height:1.8}
 .about-section{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px;align-items:center}
-.about-mark{font-family:'Playfair Display';font-size:clamp(100px,18vw,210px);font-weight:700;letter-spacing:-.12em;color:#171717;text-shadow:3px 3px #d2a34c}
+.about-mark{display:flex;align-items:center;justify-content:center}.about-mark img{width:min(100%,320px);height:230px;object-fit:contain}
 .about-mark span{color:#bd8a36}
 .about-copy h2{margin-bottom:22px}
 .about-copy>p{max-width:540px;color:#777;font-size:13px;line-height:2}
@@ -154,3 +152,34 @@ h1 em,h2 em{font-weight:500;color:#a87825}
  .announcement{font-size:8px}.hero h1{font-size:49px}.hero-actions{align-items:flex-start;flex-direction:column;gap:18px}.hero-proof{flex-direction:column;gap:10px}.hero-art{height:340px}.art-card{width:220px;height:300px}.floating-tag{right:0;bottom:15px}
  .trust-strip{gap:17px}.trust-strip div{font-size:9px}.section-heading h2,.benefits-heading h2,.about-copy h2{font-size:44px}.product-info h3{font-size:31px}.product-visual{min-height:440px}.book-mock{transform:scale(.88) rotate(-5deg)}.benefit-grid{grid-template-columns:1fr}.benefit-grid article{border-right:0;border-bottom:1px solid #49443b;padding-bottom:20px}.footer-links{flex-wrap:wrap}.footer-bottom{gap:12px;flex-direction:column}.checkout-modal{padding:28px 22px}
 }
+/* Mekden monogram refinements */
+.brand{width:120px;height:74px}.footer-brand img{width:115px;height:82px}.announcement{letter-spacing:.2em}.art-card-front{padding:22px 25px}.book-mock{border-radius:2px}.file-row{transition:background .2s}.file-row:hover{background:#faf8f4}.file-number{min-width:24px}.file-row b{font-size:12px}.file-row small{font-size:10px}
+@media(max-width:600px){.hero-monogram{width:155px;height:125px}.about-mark img{height:180px}}
+
+/* Brand lockup and community feedback */
+.brand{width:auto;min-width:190px;gap:10px;overflow:visible;justify-content:flex-start}
+.brand img{width:52px;height:56px;object-fit:contain}
+.brand-name{font-size:13px;letter-spacing:.15em;color:#171717;font-weight:500;white-space:nowrap}
+.brand-name b{font-weight:700;color:#a87825}
+.footer-brand-lockup{display:flex;align-items:center;gap:10px;font-size:13px;letter-spacing:.13em}
+.footer-brand-lockup img{width:48px;height:52px;object-fit:contain}
+.footer-brand>p{margin-top:10px}
+.hero-monogram,.book-monogram,.about-mark img{background:transparent!important;mix-blend-mode:normal}
+.book-monogram{width:165px;height:120px;padding:0;object-fit:contain}
+.file-monogram{width:34px;height:30px;object-fit:contain;mix-blend-mode:normal}
+.reviews-section{background:#faf9f6}
+.reviews-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:55px;align-items:start}
+.review-form{background:#fff;border:1px solid #e9e4da;padding:28px;box-shadow:0 14px 35px #00000008}
+.review-form h3,.review-empty h3{font:500 24px 'Playfair Display',serif;margin:0 0 20px}
+.review-form label{display:block;font-size:10px;font-weight:700;margin:13px 0;color:#555}
+.review-form input,.review-form select,.review-form textarea{display:block;width:100%;margin-top:7px;border:1px solid #dedbd4;background:#fff;padding:12px;font:12px 'DM Sans',sans-serif;outline:none}
+.review-form input:focus,.review-form select:focus,.review-form textarea:focus{border-color:#ae823d}
+.review-form textarea{resize:vertical}
+.review-form small{display:block;margin-top:13px;color:#888;font-size:9px;line-height:1.6}
+.review-list{display:grid;gap:14px}
+.review-empty,.review-card{background:#fff;border:1px solid #e9e4da;padding:25px}
+.review-empty p,.review-card p{font-size:12px;color:#777;line-height:1.8;margin:12px 0}
+.review-stars{color:#b78332;letter-spacing:.12em;font-size:15px}
+.review-meta{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:10px}
+.review-meta span{color:#999;font-size:9px}
+@media(max-width:800px){.brand{min-width:0}.reviews-layout{grid-template-columns:1fr;gap:25px}}
