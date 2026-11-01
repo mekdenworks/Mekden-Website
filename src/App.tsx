@@ -246,9 +246,14 @@ function App() {
                 <div className="book-foot">7 RESOURCES <span>•</span> DIGITAL EDITION</div>
               </div>
               <div className="visual-caption">A clearer starting point for your content journey.</div>
-              <a className="preview-link" href={`${ASSET_BASE}Mekden_Works_Free_Preview.pdf`} target="_blank" rel="noreferrer">
-                View the free preview <ArrowUpRight size={15} />
-              </a>
+              <a
+  className="preview-link"
+  href="/Mekden-Website/Mekden_Works_Free_Preview.pdf"
+  target="_blank"
+  rel="noreferrer"
+>
+  View the free preview <ArrowUpRight size={15} />
+</a>
             </div>
 
             <div className="pricing-content">
