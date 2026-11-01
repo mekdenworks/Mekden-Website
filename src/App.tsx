@@ -499,13 +499,13 @@ function App() {
                 <em>questions.</em>
               </h2>
             </div>
-            <p className="faq-contact-copy">
-              Need help or have a question? Email us at{" "}
-              <a href={`mailto:${STORE_CONFIG.contactEmail}`}>
-                {STORE_CONFIG.contactEmail}
-              </a>{" "}
-              or reach out through Instagram.
-            </p>
+            <p>
+  Need help with an order? Email us at{" "}
+  <a href={`mailto:${STORE_CONFIG.contactEmail}`}>
+    {STORE_CONFIG.contactEmail}
+  </a>
+  {" "}or contact us through Instagram.
+</p>
           </div>
 
           <div className="faq-list">
@@ -580,6 +580,20 @@ function App() {
           >
             <Instagram size={15} /> Instagram
           </a>
+          <div className="footer-contact">
+  <span className="footer-contact-label">CONTACT</span>
+
+  <a href={`mailto:${STORE_CONFIG.contactEmail}`}>
+    {STORE_CONFIG.contactEmail}
+  </a>
+
+  <a
+    className="footer-enquiry"
+    href={`mailto:${STORE_CONFIG.contactEmail}?subject=Mekden%20Works%20Enquiry`}
+  >
+    Send an enquiry <ArrowUpRight size={14} />
+  </a>
+</div>
           <a
             href={`mailto:${STORE_CONFIG.contactEmail}?subject=Mekden%20Works%20Enquiry`}
           >
