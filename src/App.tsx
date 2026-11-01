@@ -541,7 +541,7 @@ function App() {
             <em>count.</em>
           </h2>
 
-          <button className="button button-gold" onClick={startCheckout}>
+          <button className="button button-gold" onClick={() => startCheckout()}>
             Explore the Creator Pack <ArrowRight size={17} />
           </button>
         </section>
