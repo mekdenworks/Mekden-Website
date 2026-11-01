@@ -64,7 +64,7 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 .book-name b{color:#d8ad64;font-size:22px}
 .book-foot{font-size:7px;letter-spacing:.14em;color:#d8c9aa}
 .book-foot span{color:#d8ad64;padding:0 5px}
-.visual-caption{position:absolute;bottom:25px;font-family:'Playfair Display';font-style:italic;color:#827b70;font-size:14px}
+.visual-caption{   position:absolute;   bottom:55px;   left:20px;   right:20px;   text-align:center;   font-family:'Playfair Display';   font-style:italic;   color:#827b70;   font-size:14px; }
 .product-kicker{font-size:9px;letter-spacing:.19em;color:#a8792e;font-weight:700}
 .product-info h3{font-family:'Playfair Display';font-size:36px;font-weight:500;line-height:1.18;margin:16px 0}
 .muted{color:#777;font-size:12px;line-height:1.8;max-width:460px}
@@ -211,7 +211,7 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 .tracker-coming svg{display:inline-block;vertical-align:middle;margin-right:5px}
 .tracker-coming small{display:block;color:#999;font-size:7px;margin:3px 0 0 20px}
 .plan-button{width:100%;justify-content:center;padding:12px 8px;font-size:9px;gap:6px;white-space:nowrap}
-.preview-link{display:inline-flex;align-items:center;gap:8px;margin-top:24px;color:#9b712e;font-size:10px;font-weight:700}
+.preview-link{   position:absolute;   bottom:25px;   left:0;   right:0;   width:max-content;   margin:0 auto;   display:inline-flex;   align-items:center;   gap:8px;   color:#9b712e;   font-size:10px;   font-weight:700;   z-index:3; }
 .all-resources{margin-top:70px}
 .resource-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:40px}
 .resource-grid .file-row{min-width:0}
