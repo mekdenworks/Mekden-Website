@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   ArrowRight, ArrowUpRight, Check, ChevronDown, Instagram,
@@ -6,6 +5,8 @@ import {
 } from "lucide-react";
 
 const ASSET_BASE = import.meta.env.BASE_URL;
+
+const PREVIEW_URL = `${ASSET_BASE}Mekden_Works_Free_Preview.pdf`;
 
 const PRODUCT_FILES = [
   { name: "100 Reel Hooks", file: "01-100-Reel-Hooks.pdf", detail: "Scroll-stopping opening lines to help your Reels earn attention." },
@@ -17,12 +18,38 @@ const PRODUCT_FILES = [
   { name: "Creator Growth & Posting System", file: "07-Creator-Growth-Posting-System.pdf", detail: "A repeatable system for planning, posting and reviewing content." },
 ];
 
+const PLANS = [
+  {
+    name: "BRONZE",
+    price: 99,
+    original: 129,
+    discount: "YOU SAVE 23%",
+    label: "Starter Pack",
+    files: PRODUCT_FILES.slice(0, 3),
+  },
+  {
+    name: "SILVER",
+    price: 149,
+    original: 249,
+    discount: "YOU SAVE 40%",
+    label: "Popular Choice",
+    files: PRODUCT_FILES.slice(0, 5),
+  },
+  {
+    name: "GOLD",
+    price: 199,
+    original: 399,
+    discount: "YOU SAVE 50%",
+    label: "Best Value",
+    files: PRODUCT_FILES,
+    bonus: "30-Day Creator Performance Tracker",
+  },
+];
+
 const STORE_CONFIG = {
-  originalPrice: 299,
-  salePrice: 149,
+  instagramUrl: "https://www.instagram.com/mekdenworks/",
   upiId: "",
   payeeName: "Mekden Works",
-  instagramUrl: "https://www.instagram.com/mekdenworks/",
   contactEmail: "",
 };
 
@@ -32,6 +59,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [modal, setModal] = useState<Modal>(null);
   const [copied, setCopied] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(PLANS[1]);
   const [orderName, setOrderName] = useState("");
   const [orderEmail, setOrderEmail] = useState("");
   const [orderRef, setOrderRef] = useState("");
@@ -63,7 +91,8 @@ function App() {
     window.setTimeout(() => setCopied(false), 1800);
   };
 
-  const startCheckout = () => {
+  const startCheckout = (plan = PLANS[1]) => {
+    setSelectedPlan(plan);
     setModal("checkout");
     setOrderRef(
       "MW-" + Math.random().toString(36).slice(2, 8).toUpperCase()
@@ -163,8 +192,8 @@ function App() {
                 Explore the pack <ArrowRight size={17} />
               </button>
 
-              <a className="text-link" href="#about">
-                Discover Mekden Works <ArrowUpRight size={16} />
+              <a className="text-link" href={PREVIEW_URL} target="_blank" rel="noreferrer">
+                Free Preview <ArrowUpRight size={16} />
               </a>
             </div>
 
@@ -211,9 +240,7 @@ function App() {
               <Zap size={15} /> START CREATING
             </div>
           </div>
-        </section>
-
-        <section className="trust-strip">
+        </section>        <section className="trust-strip">
           <div><strong>01</strong><span>Plan with clarity</span></div>
           <div><strong>02</strong><span>Create with purpose</span></div>
           <div><strong>03</strong><span>Post consistently</span></div>
@@ -226,104 +253,80 @@ function App() {
               <div className="eyebrow">
                 <span className="eyebrow-line" /> THE FIRST RELEASE
               </div>
-              <h2>
-                Meet your new
-                <br />
-                <em>creator toolkit.</em>
-              </h2>
+              <h2>Choose your <em>creator pack.</em></h2>
             </div>
+            <p>Choose the collection that fits your content creation needs.</p>
+          </div>
 
-            <p>
-              Seven focused resources. One simple system to help you
-              move from “what should I post?” to a clearer content routine.
-            </p>
+          <div className="pricing-grid">
+            {PLANS.map((plan) => (
+              <article className={`pricing-card pricing-${plan.name.toLowerCase()}`} key={plan.name}>
+                <div className="plan-label">{plan.label}</div>
+                <h3>{plan.name}</h3>
+                <div className="price-row">
+                  <span className="old-price">₹{plan.original}</span>
+                  <strong>₹{plan.price}</strong>
+                </div>
+                <span className="save-pill">{plan.discount}</span>
+
+                <div className="included-title">WHAT'S INCLUDED</div>
+                <ul className="plan-files">
+                  {plan.files.map((file) => (
+                    <li key={file.name}>
+                      <Check size={15} />
+                      <span>{file.name}.pdf</span>
+                    </li>
+                  ))}
+                  {plan.bonus && (
+                    <li>
+                      <Sparkles size={15} />
+                      <span>{plan.bonus} — Bonus</span>
+                    </li>
+                  )}
+                </ul>
+
+                <button
+                  className="button button-gold buy-button"
+                  onClick={() => startCheckout(plan)}
+                >
+                  Choose {plan.name} <ArrowRight size={17} />
+                </button>
+              </article>
+            ))}
+          </div>
+
+          <div className="preview-callout">
+            <h3>Not sure yet?</h3>
+            <p>Explore actual sample pages before choosing your pack.</p>
+            <a className="button button-dark" href={PREVIEW_URL} target="_blank" rel="noreferrer">
+              View Free Preview <ArrowUpRight size={17} />
+            </a>
           </div>
 
           <div className="product-layout">
             <div className="product-visual">
-              <div className="product-visual-label">
-                MEKDEN WORKS / DIGITAL COLLECTION
-              </div>
-
+              <div className="product-visual-label">MEKDEN WORKS / DIGITAL COLLECTION</div>
               <div className="book-mock">
-                <img
-                  className="book-monogram"
-                  src={`${ASSET_BASE}mekden-monogram.png`}
-                  alt="Mekden monogram"
-                />
+                <img className="book-monogram" src={`${ASSET_BASE}mekden-monogram.png`} alt="Mekden monogram" />
                 <div className="book-rule" />
-                <div className="book-name">
-                  CREATOR
-                  <br />
-                  <b>STARTER PACK</b>
-                </div>
-                <div className="book-foot">
-                  7 RESOURCES <span>•</span> DIGITAL EDITION
-                </div>
+                <div className="book-name">CREATOR<br /><b>STARTER PACK</b></div>
+                <div className="book-foot">7 RESOURCES <span>•</span> DIGITAL EDITION</div>
               </div>
-
-              <div className="visual-caption">
-                A clearer starting point for your content journey.
-              </div>
+              <div className="visual-caption">A clearer starting point for your content journey.</div>
             </div>
 
             <div className="product-info">
-              <div className="product-kicker">
-                THE CREATOR STARTER PACK
-              </div>
-
-              <h3>
-                Everything you need
-                <br />
-                to create with direction.
-              </h3>
-
+              <div className="product-kicker">THE CREATOR STARTER PACK</div>
+              <h3>Everything you need to create with direction.</h3>
               <p className="muted">
-                A practical digital collection designed to make content
-                planning simpler and more structured.
+                A practical digital collection designed to make content planning simpler and more structured.
               </p>
-
-              <div className="price-row">
-                <span className="old-price">
-                  ₹{STORE_CONFIG.originalPrice}
-                </span>
-                <strong>₹{STORE_CONFIG.salePrice}</strong>
-                <span className="save-pill">YOU SAVE 50%</span>
-              </div>
-
-              <button
-                className="button button-gold buy-button"
-                onClick={startCheckout}
-              >
-                Get instant access <ArrowRight size={17} />
-              </button>
-
-              <div className="secure-note">
-                <ShieldCheck size={16} />
-                Delivery after payment verification
-              </div>
-
-              <div className="included-title">
-                WHAT'S INCLUDED <span>07 FILES</span>
-              </div>
-
               <div className="file-list">
                 {PRODUCT_FILES.map((item, index) => (
                   <div className="file-row" key={item.file}>
-                    <span className="file-number">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-
-                    <div>
-                      <b>{item.name}</b>
-                      <small>{item.detail}</small>
-                    </div>
-
-                    <img
-                      className="file-monogram"
-                      src={`${ASSET_BASE}mekden-monogram.png`}
-                      alt=""
-                    />
+                    <span className="file-number">{String(index + 1).padStart(2, "0")}</span>
+                    <div><b>{item.name}</b><small>{item.detail}</small></div>
+                    <img className="file-monogram" src={`${ASSET_BASE}mekden-monogram.png`} alt="" />
                   </div>
                 ))}
               </div>
@@ -334,131 +337,59 @@ function App() {
         <section className="benefits-section">
           <div className="section-pad">
             <div className="eyebrow eyebrow-light">
-              <span className="eyebrow-line" />
-              LESS GUESSWORK. MORE DIRECTION.
+              <span className="eyebrow-line" /> LESS GUESSWORK. MORE DIRECTION.
             </div>
-
             <div className="benefits-heading">
-              <h2>
-                Make creating
-                <br />
-                <em>feel more structured.</em>
-              </h2>
-              <p>
-                Good content starts with a clear process. Use the resources
-                in your own way, at your own pace.
-              </p>
+              <h2>Make creating <em>feel more structured.</em></h2>
+              <p>Good content starts with a clear process. Use the resources in your own way, at your own pace.</p>
             </div>
-
             <div className="benefit-grid">
-              <article>
-                <span>01</span>
-                <h3>Find your next idea</h3>
-                <p>
-                  Keep a bank of hooks and ideas ready when you sit down to create.
-                </p>
-              </article>
-
-              <article>
-                <span>02</span>
-                <h3>Plan your content</h3>
-                <p>
-                  Give your month more structure with a simple calendar and scripts.
-                </p>
-              </article>
-
-              <article>
-                <span>03</span>
-                <h3>Communicate clearly</h3>
-                <p>
-                  Use caption and CTA inspiration to make each post more intentional.
-                </p>
-              </article>
-
-              <article>
-                <span>04</span>
-                <h3>Build consistency</h3>
-                <p>
-                  Create a repeatable posting system that works with your routine.
-                </p>
-              </article>
+              {[
+                ["01", "Find your next idea", "Keep a bank of hooks and ideas ready when you sit down to create."],
+                ["02", "Plan your content", "Give your month more structure with a simple calendar and scripts."],
+                ["03", "Communicate clearly", "Use caption and CTA inspiration to make each post more intentional."],
+                ["04", "Build consistency", "Create a repeatable posting system that works with your routine."],
+              ].map(([number, title, description]) => (
+                <article key={number}>
+                  <span>{number}</span><h3>{title}</h3><p>{description}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
         <section className="about-section section-pad" id="about">
           <div className="about-mark">
-            <img
-              src={`${ASSET_BASE}mekden-monogram.png`}
-              alt="Mekden Works monogram"
-            />
+            <img src={`${ASSET_BASE}mekden-monogram.png`} alt="Mekden Works monogram" />
           </div>
-
           <div className="about-copy">
-            <div className="eyebrow">
-              <span className="eyebrow-line" /> ABOUT THE BRAND
-            </div>
-
-            <h2>
-              Ideas.
-              <br />
-              <em>Made useful.</em>
-            </h2>
-
+            <div className="eyebrow"><span className="eyebrow-line" /> ABOUT THE BRAND</div>
+            <h2>Ideas. <em>Made useful.</em></h2>
             <p>
-              Mekden Works is built around a simple belief: good ideas
-              deserve practical execution. We create accessible digital
-              products that help people plan, create and move forward
-              with more clarity.
+              Mekden Works is built around a simple belief: good ideas deserve practical execution.
+              We create accessible digital products that help people plan, create and move forward with more clarity.
             </p>
-
-            <div className="signature">
-              MEKDEN WORKS
-              <span>IDEAS → PRODUCTS → IMPACT</span>
-            </div>
+            <div className="signature">MEKDEN WORKS<span>IDEAS → PRODUCTS → IMPACT</span></div>
           </div>
         </section>
 
         <section className="reviews-section section-pad" id="reviews">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">
-                <span className="eyebrow-line" /> COMMUNITY FEEDBACK
-              </div>
-              <h2>
-                Thoughts from
-                <br />
-                <em>the community.</em>
-              </h2>
+              <div className="eyebrow"><span className="eyebrow-line" /> COMMUNITY FEEDBACK</div>
+              <h2>Thoughts from <em>the community.</em></h2>
             </div>
-
-            <p>
-              Have you used the Creator Starter Pack? Share honest feedback.
-              Reviews submitted here are labelled as unverified until checked.
-            </p>
+            <p>Have you used the Creator Starter Pack? Share honest feedback.</p>
           </div>
 
           <div className="reviews-layout">
             <form className="review-form" onSubmit={submitReview}>
               <h3>Write a review</h3>
-
-              <label>
-                Your name
-                <input
-                  required
-                  maxLength={40}
-                  value={reviewName}
-                  onChange={(e) => setReviewName(e.target.value)}
-                  placeholder="Your name"
-                />
+              <label>Your name
+                <input required maxLength={40} value={reviewName} onChange={(e) => setReviewName(e.target.value)} placeholder="Your name" />
               </label>
-
-              <label>
-                Your rating
-                <select
-                  value={reviewRating}
-                  onChange={(e) => setReviewRating(e.target.value)}
-                >
+              <label>Your rating
+                <select value={reviewRating} onChange={(e) => setReviewRating(e.target.value)}>
                   <option value="5">5 — Excellent</option>
                   <option value="4">4 — Good</option>
                   <option value="3">3 — Okay</option>
@@ -466,28 +397,11 @@ function App() {
                   <option value="1">1 — Not satisfied</option>
                 </select>
               </label>
-
-              <label>
-                Your feedback
-                <textarea
-                  required
-                  minLength={8}
-                  maxLength={500}
-                  value={reviewText}
-                  onChange={(e) => setReviewText(e.target.value)}
-                  placeholder="Tell others what you genuinely thought..."
-                  rows={4}
-                />
+              <label>Your feedback
+                <textarea required minLength={8} maxLength={500} value={reviewText} onChange={(e) => setReviewText(e.target.value)} placeholder="Tell others what you genuinely thought..." rows={4} />
               </label>
-
-              <button className="button button-dark" type="submit">
-                Submit feedback <ArrowRight size={16} />
-              </button>
-
-              <small>
-                Feedback is saved in this browser only. It is not automatically
-                published to other visitors.
-              </small>
+              <button className="button button-dark" type="submit">Submit feedback <ArrowRight size={16} /></button>
+              <small>Feedback is saved in this browser only. It is not automatically published to other visitors.</small>
             </form>
 
             <div className="review-list">
@@ -495,20 +409,13 @@ function App() {
                 <div className="review-empty">
                   <div className="review-stars">★★★★★</div>
                   <h3>Be the first to share feedback.</h3>
-                  <p>
-                    No customer reviews have been published yet.
-                    We only display genuine customer feedback.
-                  </p>
+                  <p>No customer reviews have been published yet. We only display genuine customer feedback.</p>
                 </div>
               ) : (
                 reviews.map((review, index) => (
-                  <article
-                    className="review-card"
-                    key={`${review.date}-${index}`}
-                  >
+                  <article className="review-card" key={`${review.date}-${index}`}>
                     <div className="review-stars">
-                      {"★".repeat(review.rating)}
-                      {"☆".repeat(5 - review.rating)}
+                      {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
                     </div>
                     <p>“{review.text}”</p>
                     <div className="review-meta">
@@ -520,49 +427,26 @@ function App() {
               )}
             </div>
           </div>
-        </section>
-
+        </section>  
+        
         <section className="faq-section section-pad" id="faq">
           <div className="section-heading faq-heading">
             <div>
-              <div className="eyebrow">
-                <span className="eyebrow-line" /> GOOD TO KNOW
-              </div>
-              <h2>
-                Frequently asked
-                <br />
-                <em>questions.</em>
-              </h2>
+              <div className="eyebrow"><span className="eyebrow-line" /> GOOD TO KNOW</div>
+              <h2>Frequently asked <em>questions.</em></h2>
             </div>
-            <p>
-              Need something else? Reach out through the brand's Instagram page.
-            </p>
+            <p>Need something else? Reach out through the brand's Instagram page.</p>
           </div>
-
           <div className="faq-list">
             {[
-              [
-                "What do I get with the Creator Starter Pack?",
-                "The pack contains seven PDF resources covering hooks, content ideas, a 30-day calendar, Reel scripts, captions and CTAs, profile optimization, and a creator growth system.",
-              ],
-              [
-                "Is this a subscription?",
-                "No. The listed ₹149 price is a one-time price for this digital pack.",
-              ],
-              [
-                "How will I receive the files?",
-                "The files will be made available after the payment is genuinely verified and the seven PDFs have been uploaded to the website.",
-              ],
-              [
-                "Can I access the pack on my phone?",
-                "Yes. The website is designed to work on mobile, tablet and desktop. PDF compatibility depends on your device's PDF viewer.",
-              ],
+              ["What do I get with each plan?", "Bronze includes 3 PDFs, Silver includes 5 PDFs, and Gold includes all 7 PDFs plus the bonus Creator Performance Tracker."],
+              ["Is this a subscription?", "No. Each plan is a one-time purchase."],
+              ["How will I receive the files?", "The files will be delivered after the payment is genuinely verified."],
+              ["Can I access the pack on my phone?", "Yes. PDF files can be opened on compatible phones, tablets and computers."],
+              ["Can I see the pack before buying?", "Yes. Use the Free Preview button to view sample pages."],
             ].map(([question, answer]) => (
               <details key={question}>
-                <summary>
-                  {question}
-                  <ChevronDown size={18} />
-                </summary>
+                <summary>{question}<ChevronDown size={18} /></summary>
                 <p>{answer}</p>
               </details>
             ))}
@@ -571,17 +455,10 @@ function App() {
 
         <section className="closing-cta">
           <div className="eyebrow eyebrow-light">
-            <span className="eyebrow-line" />
-            YOUR NEXT STEP STARTS HERE
+            <span className="eyebrow-line" /> YOUR NEXT STEP STARTS HERE
           </div>
-
-          <h2>
-            Make your next idea
-            <br />
-            <em>count.</em>
-          </h2>
-
-          <button className="button button-gold" onClick={startCheckout}>
+          <h2>Make your next idea <em>count.</em></h2>
+          <button className="button button-gold" onClick={() => startCheckout()}>
             Explore the Creator Pack <ArrowRight size={17} />
           </button>
         </section>
@@ -590,96 +467,49 @@ function App() {
       <footer className="footer">
         <div className="footer-brand">
           <div className="footer-brand-lockup">
-            <img
-              src={`${ASSET_BASE}mekden-logo.png`}
-              alt="Mekden Works logo"
-            />
+            <img src={`${ASSET_BASE}mekden-logo.png`} alt="Mekden Works logo" />
             <b>MEKDEN WORKS</b>
           </div>
           <p>Ideas → Products → Impact.</p>
         </div>
-
         <div className="footer-links">
           <a href="#product">Products</a>
           <a href="#about">About</a>
           <a href="#reviews">Reviews</a>
           <a href="#faq">FAQ</a>
-          <a
-            href={STORE_CONFIG.instagramUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={STORE_CONFIG.instagramUrl} target="_blank" rel="noreferrer">
             <Instagram size={15} /> Instagram
           </a>
         </div>
-
         <div className="footer-bottom">
-          <span>
-            © {new Date().getFullYear()} Mekden Works. All rights reserved.
-          </span>
+          <span>© {new Date().getFullYear()} Mekden Works. All rights reserved.</span>
           <span>Built with purpose.</span>
         </div>
       </footer>
 
       {modal === "checkout" && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModal(null);
-          }}
-        >
-          <div
-            className="checkout-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="checkout-title"
-          >
-            <button
-              className="modal-close"
-              onClick={() => setModal(null)}
-              aria-label="Close checkout"
-            >
-              <X />
-            </button>
-
-            <div className="eyebrow">
-              <span className="eyebrow-line" /> SECURE ORDER REQUEST
-            </div>
-
-            <h2 id="checkout-title">
-              Your creator
-              <br />
-              <em>starter pack.</em>
-            </h2>
+        <div className="modal-backdrop" role="presentation" onMouseDown={(e) => {
+          if (e.target === e.currentTarget) setModal(null);
+        }}>
+          <div className="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+            <button className="modal-close" onClick={() => setModal(null)} aria-label="Close checkout"><X /></button>
+            <div className="eyebrow"><span className="eyebrow-line" /> ORDER REQUEST</div>
+            <h2 id="checkout-title">Your {selectedPlan.name.toLowerCase()} <em>creator pack.</em></h2>
 
             <div className="checkout-summary">
-              <span>Creator Starter Pack</span>
-              <strong>₹149</strong>
+              <span>{selectedPlan.name} — Creator Starter Pack</span>
+              <strong>₹{selectedPlan.price}</strong>
             </div>
-
             <div className="checkout-discount">
-              <span className="old-price">₹299</span>
-              <b>YOU SAVE 50%</b>
+              <span className="old-price">₹{selectedPlan.original}</span>
+              <b>{selectedPlan.discount}</b>
             </div>
 
-            <label>
-              Your name
-              <input
-                value={orderName}
-                onChange={(e) => setOrderName(e.target.value)}
-                placeholder="Enter your name"
-              />
+            <label>Your name
+              <input value={orderName} onChange={(e) => setOrderName(e.target.value)} placeholder="Enter your name" />
             </label>
-
-            <label>
-              Email for delivery
-              <input
-                type="email"
-                value={orderEmail}
-                onChange={(e) => setOrderEmail(e.target.value)}
-                placeholder="you@example.com"
-              />
+            <label>Email for delivery
+              <input type="email" value={orderEmail} onChange={(e) => setOrderEmail(e.target.value)} placeholder="you@example.com" />
             </label>
 
             <div className="upi-panel">
@@ -687,51 +517,20 @@ function App() {
                 <span>UPI PAYMENT</span>
                 <span className="setup-tag">SETUP REQUIRED</span>
               </div>
-
-              {STORE_CONFIG.upiId ? (
-                <>
-                  <p>
-                    Pay exactly <b>₹149</b> to the verified UPI ID below:
-                  </p>
-                  <div className="upi-id">
-                    {STORE_CONFIG.upiId}
-                    <button onClick={copyUpi}>
-                      {copied ? <Check size={16} /> : "Copy"}
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <p className="setup-message">
-                  UPI details will appear here after the payment account
-                  is approved and configured. Checkout is not live yet.
-                </p>
-              )}
-
+              <p className="setup-message">
+                UPI details will appear here after the payment account is approved and configured.
+                Checkout is not live yet.
+              </p>
               <p className="small-warning">
-                Do not treat a payment screenshot as confirmation.
-                Orders must be checked against the actual received transaction.
+                Do not treat a payment screenshot as confirmation. Orders must be checked against the actual received transaction.
               </p>
             </div>
 
-            <button
-              className="button button-dark full-button"
-              disabled={
-                !STORE_CONFIG.upiId ||
-                !orderName.trim() ||
-                !orderEmail.trim()
-              }
-              onClick={() =>
-                alert(
-                  "Payment verification and delivery must be connected before checkout can go live."
-                )
-              }
-            >
-              Continue to payment <ArrowRight size={17} />
+            <button className="button button-dark full-button" disabled>
+              Payment setup pending <ArrowRight size={17} />
             </button>
-
             <p className="modal-footnote">
-              Order reference: {orderRef} · This is a preview checkout
-              until payment verification is connected.
+              Order reference: {orderRef} · Payment and delivery are not live yet.
             </p>
           </div>
         </div>
