@@ -20,10 +20,10 @@ const PRODUCT_FILES = [
 const STORE_CONFIG = {
   originalPrice: 299,
   salePrice: 149,
-  upiId: "",
+  upiId: "mekden.arya@fam",
   payeeName: "Mekden Works",
   instagramUrl: "https://www.instagram.com/mekdenworks/",
-  contactEmail: "",
+  contactEmail: "mekdenworks@gmail.com",
 };
 
 const PLANS = [
@@ -678,22 +678,30 @@ function App() {
               </p>
             </div>
 
-            <button
-              className="button button-dark full-button"
-              disabled={
-                !STORE_CONFIG.upiId ||
-                !orderName.trim() ||
-                !orderEmail.trim()
-              }
-              onClick={() =>
-                alert(
-                  "Payment verification and delivery must be connected before checkout can go live."
-                )
-              }
-            >
-              Continue to payment <ArrowRight size={17} />
-            </button>
-
+            <a
+  className="button button-dark full-button"
+  href={`upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`}
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    textDecoration: "none",
+    pointerEvents:
+      !STORE_CONFIG.upiId || !orderName.trim() || !orderEmail.trim()
+        ? "none"
+        : "auto",
+    opacity:
+      !STORE_CONFIG.upiId || !orderName.trim() || !orderEmail.trim()
+        ? 0.5
+        : 1
+  }}
+  aria-disabled={
+    !STORE_CONFIG.upiId || !orderName.trim() || !orderEmail.trim()
+  }
+>
+  Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
+</a>
             <p className="modal-footnote">
               Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
             </p>
