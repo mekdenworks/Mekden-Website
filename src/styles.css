@@ -221,3 +221,47 @@ h1 em,h2 em{font-weight:500;color:#a87825}
 @media(max-width:1050px){.pricing-product-layout{grid-template-columns:1fr;gap:40px}.product-visual{min-height:460px}.pricing-content{width:100%}}
 @media(max-width:800px){.pricing-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.pricing-card{padding:18px 11px 13px}.plan-price-row strong{font-size:30px}.plan-files li{font-size:8px}.resource-grid{column-gap:22px}}
 @media(max-width:600px){.pricing-grid{grid-template-columns:1fr;gap:16px}.pricing-card{padding:22px}.plan-description{min-height:0}.plan-files li{font-size:10px}.plan-button{font-size:11px;padding:14px}.resource-grid{grid-template-columns:1fr}.pricing-content h3{font-size:32px}.all-resources{margin-top:48px}}
+/* Footer contact section */
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 20px 0 25px;
+  font-size: 11px;
+}
+
+.footer-contact-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  color: #9b712e;
+}
+
+.footer-contact > a {
+  color: #444;
+  transition: color .2s;
+}
+
+.footer-contact > a:hover {
+  color: #a87825;
+}
+
+.footer-contact .footer-enquiry {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 600;
+}
+
+.faq-heading > p a,
+.faq-list a {
+  color: #9b712e;
+  text-decoration: underline;
+}
+
+@media(max-width:480px) {
+  .footer-contact {
+    margin: 18px 0 22px;
+  }
+}
