@@ -810,22 +810,70 @@ function App() {
 </div>
 
 {STORE_CONFIG.upiId && (
-  <button
-    type="button"
-    className="button button-dark full-button"
-    onClick={submitOrder}
-    disabled={!orderName.trim() || !orderEmail.trim()}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: "10px",
-      width: "100%",
-      opacity: !orderName.trim() || !orderEmail.trim() ? 0.5 : 1,
-    }}
-  >
-    Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
-  </button>
+  <>
+    {paymentStep === "payment" ? (
+      <>
+        <button
+          type="button"
+          className="button button-dark full-button"
+          onClick={submitOrder}
+          disabled={!orderName.trim() || !orderEmail.trim()}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            width: "100%",
+            opacity: !orderName.trim() || !orderEmail.trim() ? 0.5 : 1,
+          }}
+        >
+          Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
+        </button>
+
+        <button
+          type="button"
+          className="button button-outline full-button"
+          onClick={() => setPaymentStep("utr")}
+          style={{ width: "100%", marginTop: "10px" }}
+        >
+          I've Completed Payment
+        </button>
+      </>
+    ) : (
+      <div style={{ marginTop: "16px" }}>
+        <label htmlFor="transactionId">
+          UPI Transaction ID / UTR
+        </label>
+
+        <input
+          id="transactionId"
+          type="text"
+          value={transactionId}
+          onChange={(e) => setTransactionId(e.target.value)}
+          placeholder="Enter your UTR number"
+          style={{ width: "100%", marginTop: "8px" }}
+        />
+
+        <button
+          type="button"
+          className="button button-dark full-button"
+          onClick={submitTransactionId}
+          disabled={utrSubmitting || !transactionId.trim()}
+          style={{ width: "100%", marginTop: "12px" }}
+        >
+          {utrSubmitting ? "Submitting..." : "Submit Transaction ID"}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setPaymentStep("payment")}
+          style={{ marginTop: "10px" }}
+        >
+          Back to Payment
+        </button>
+      </div>
+    )}
+  </>
 )}
 <p className="modal-footnote">
   Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
