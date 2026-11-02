@@ -682,61 +682,75 @@ function App() {
               />
             </label>
 
-            <div className="upi-panel">
-              <div className="upi-panel-head">
-                <span>UPI PAYMENT</span>
-                <span className="setup-tag">SETUP REQUIRED</span>
-              </div>
+<div className="upi-panel">
+  <div className="upi-panel-head">
+    <span>UPI PAYMENT</span>
+    <span className="setup-tag">
+      {STORE_CONFIG.upiId ? "READY TO PAY" : "SETUP REQUIRED"}
+    </span>
+  </div>
 
-              {STORE_CONFIG.upiId ? (
-                <>
-                  <p>
-                    Pay exactly <b>₹{selectedPlan.price}</b> to the UPI ID below:
-                  </p>
-                  <div className="upi-id">
-                    {STORE_CONFIG.upiId}
-                    <button onClick={copyUpi}>
-                      {copied ? <Check size={16} /> : "Copy"}
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <p className="setup-message">
-                  UPI details will appear here after the payment account
-                  is approved and configured. Checkout is not live yet.
-                </p>
-              )}
+  {STORE_CONFIG.upiId ? (
+    <>
+      <p>
+        Pay exactly <b>₹{selectedPlan.price}</b> using UPI:
+      </p>
 
-              <p className="small-warning">
-                Do not treat a payment screenshot as confirmation.
-                Orders must be checked against the actual received transaction.
-              </p>
-            </div>
+      <div className="upi-id">
+        {STORE_CONFIG.upiId}
+        <button onClick={copyUpi}>
+          {copied ? <Check size={16} /> : "Copy"}
+        </button>
+      </div>
 
-            <a
-  className="button button-dark full-button"
-  href={`upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`}
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "10px",
-    textDecoration: "none",
-    pointerEvents:
-      !STORE_CONFIG.upiId || !orderName.trim() || !orderEmail.trim()
-        ? "none"
-        : "auto",
-    opacity:
-      !STORE_CONFIG.upiId || !orderName.trim() || !orderEmail.trim()
-        ? 0.5
-        : 1
-  }}
-  aria-disabled={
-    !STORE_CONFIG.upiId || !orderName.trim() || !orderEmail.trim()
-  }
->
-  Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
-</a>
+      <div className="upi-qr">
+        <p>Scan QR to pay</p>
+        <img
+          src="/Mekden-Website/IMG_20261102_143722_134.jpg"
+          alt="Mekden Works UPI QR Code"
+          style={{
+            width: "190px",
+            height: "190px",
+            objectFit: "contain",
+            display: "block",
+            margin: "12px auto"
+          }}
+        />
+        <p className="small-warning">
+          iPhone and Mac users can scan this QR code using another device.
+        </p>
+      </div>
+    </>
+  ) : (
+    <p className="setup-message">
+      UPI ID configure karne ke baad payment details yahan dikhenge.
+    </p>
+  )}
+
+  <p className="small-warning">
+    Payment screenshot alone is not confirmation. Verify the actual
+    received transaction in your UPI app before delivery.
+  </p>
+</div>
+
+{STORE_CONFIG.upiId && (
+  <a
+    className="button button-dark full-button"
+    href={`upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "10px",
+      textDecoration: "none",
+      opacity: !orderName.trim() || !orderEmail.trim() ? 0.5 : 1,
+      pointerEvents: !orderName.trim() || !orderEmail.trim() ? "none" : "auto"
+    }}
+    aria-disabled={!orderName.trim() || !orderEmail.trim()}
+  >
+    Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
+  </a>
+)}
             <p className="modal-footnote">
               Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
             </p>
