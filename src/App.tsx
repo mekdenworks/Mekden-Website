@@ -64,54 +64,54 @@ function App() {
     closeMenu();
   };
 
+  
   const copyUpi = async () => {
-  const copyUpi = async () => {
-  if (!STORE_CONFIG.upiId) return;
-  await navigator.clipboard.writeText(STORE_CONFIG.upiId);
-  setCopied(true);
-  window.setTimeout(() => setCopied(false), 1800);
-};
-
-const startCheckout = (planId = "silver") => {
-  setSelectedPlanId(planId);
-  setModal("checkout");
-  setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
-};
-
-const submitOrder = async () => {
-  if (!orderName.trim() || !orderEmail.trim()) {
-    alert("Please enter your name and email.");
-    return;
-  }
-
-  const orderData = {
-    orderId: orderRef,
-    name: orderName.trim(),
-    email: orderEmail.trim(),
-    plan: selectedPlan.name,
-    amount: selectedPlan.price,
+    if (!STORE_CONFIG.upiId) return;
+    await navigator.clipboard.writeText(STORE_CONFIG.upiId);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1800);
   };
 
-  try {
-    await fetch(
-      "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
-      {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8",
-        },
-        body: JSON.stringify(orderData),
-      }
-    );
+  const startCheckout = (planId = "silver") => {
+    setSelectedPlanId(planId);
+    setModal("checkout");
+    setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
+  };
 
-    const upiLink = `upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`;
+  const submitOrder = async () => {
+    if (!orderName.trim() || !orderEmail.trim()) {
+      alert("Please enter your name and email.");
+      return;
+    }
 
-    window.location.href = upiLink;
-  } catch (error) {
-    alert("Order submission failed. Please try again.");
-  }
-};
+    const orderData = {
+      orderId: orderRef,
+      name: orderName.trim(),
+      email: orderEmail.trim(),
+      plan: selectedPlan.name,
+      amount: selectedPlan.price,
+    };
+
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+          body: JSON.stringify(orderData),
+        }
+      );
+
+      const upiLink = `upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`;
+
+      window.location.href = upiLink;
+    } catch (error) {
+      alert("Order submission failed. Please try again.");
+    }
+  };
 
   const submitReview = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
