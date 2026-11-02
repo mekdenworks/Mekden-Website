@@ -65,17 +65,53 @@ function App() {
   };
 
   const copyUpi = async () => {
-    if (!STORE_CONFIG.upiId) return;
-    await navigator.clipboard.writeText(STORE_CONFIG.upiId);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+  const copyUpi = async () => {
+  if (!STORE_CONFIG.upiId) return;
+  await navigator.clipboard.writeText(STORE_CONFIG.upiId);
+  setCopied(true);
+  window.setTimeout(() => setCopied(false), 1800);
+};
+
+const startCheckout = (planId = "silver") => {
+  setSelectedPlanId(planId);
+  setModal("checkout");
+  setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
+};
+
+const submitOrder = async () => {
+  if (!orderName.trim() || !orderEmail.trim()) {
+    alert("Please enter your name and email.");
+    return;
+  }
+
+  const orderData = {
+    orderId: orderRef,
+    name: orderName.trim(),
+    email: orderEmail.trim(),
+    plan: selectedPlan.name,
+    amount: selectedPlan.price,
   };
 
-  const startCheckout = (planId = "silver") => {
-    setSelectedPlanId(planId);
-    setModal("checkout");
-    setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
-  };
+  try {
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify(orderData),
+      }
+    );
+
+    const upiLink = `upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`;
+
+    window.location.href = upiLink;
+  } catch (error) {
+    alert("Order submission failed. Please try again.");
+  }
+};
 
   const submitReview = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -734,23 +770,24 @@ function App() {
 </div>
 
 {STORE_CONFIG.upiId && (
-  <a
+  <button
+    type="button"
     className="button button-dark full-button"
-    href={`upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`}
+    onClick={submitOrder}
+    disabled={!orderName.trim() || !orderEmail.trim()}
     style={{
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       gap: "10px",
-      textDecoration: "none",
+      width: "100%",
       opacity: !orderName.trim() || !orderEmail.trim() ? 0.5 : 1,
-      pointerEvents: !orderName.trim() || !orderEmail.trim() ? "none" : "auto"
     }}
-    aria-disabled={!orderName.trim() || !orderEmail.trim()}
   >
     Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
-  </a>
+  </button>
 )}
+<p className="modal-footnote">
             <p className="modal-footnote">
               Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
             </p>
