@@ -742,7 +742,7 @@ function App() {
       <div className="upi-qr">
         <p>Scan QR to pay</p>
         <img
-          src="/Mekden-Website/IMG_20261102_143722_134.jpg"
+          src="/Mekden-Website/mekden_qr_cropped.png"
           alt="Mekden Works UPI QR Code"
           style={{
             width: "190px",
