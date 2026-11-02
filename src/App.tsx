@@ -43,6 +43,9 @@ function App() {
   const [orderName, setOrderName] = useState("");
   const [orderEmail, setOrderEmail] = useState("");
   const [orderRef, setOrderRef] = useState("");
+  const [paymentStep, setPaymentStep] = useState<"payment" | "utr">("payment");
+  const [transactionId, setTransactionId] = useState("");
+  const [utrSubmitting, setUtrSubmitting] = useState(false);
   const [reviewName, setReviewName] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState("5");
@@ -78,7 +81,7 @@ function App() {
     setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
   };
 
-  const submitOrder = async () => {
+   const submitOrder = async () => {
     if (!orderName.trim() || !orderEmail.trim()) {
       alert("Please enter your name and email.");
       return;
@@ -91,6 +94,8 @@ function App() {
       plan: selectedPlan.name,
       amount: selectedPlan.price,
     };
+
+    localStorage.setItem("mekden-pending-order", JSON.stringify(orderData));
 
     try {
       await fetch(
@@ -112,7 +117,42 @@ function App() {
       alert("Order submission failed. Please try again.");
     }
   };
+    const submitTransactionId = async () => {
+    const utr = transactionId.trim();
 
+    if (!/^[A-Za-z0-9]{10,22}$/.test(utr)) {
+      alert("Please enter a valid UPI Transaction ID / UTR.");
+      return;
+    }
+
+    setUtrSubmitting(true);
+
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbwAla1H1NjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+          body: JSON.stringify({
+            action: "submitUtr",
+            orderId: orderRef,
+            transactionId: utr,
+          }),
+        }
+      );
+
+      alert("Transaction ID submitted. Payment is pending verification.");
+      setTransactionId("");
+      setPaymentStep("payment");
+    } catch (error) {
+      alert("Submission failed. Please try again.");
+    } finally {
+      setUtrSubmitting(false);
+    }
+  };
   const submitReview = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
