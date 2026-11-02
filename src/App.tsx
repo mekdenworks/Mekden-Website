@@ -94,7 +94,7 @@ function App() {
 
     try {
       await fetch(
-        "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+        "https://script.google.com/macros/s/AKfycbwAla1H1NjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
         {
           method: "POST",
           mode: "no-cors",
