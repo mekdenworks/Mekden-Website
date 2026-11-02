@@ -788,9 +788,8 @@ const submitOrder = async () => {
   </button>
 )}
 <p className="modal-footnote">
-            <p className="modal-footnote">
-              Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
-            </p>
+  Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
+</p>
           </div>
         </div>
       )}
