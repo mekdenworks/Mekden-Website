@@ -43,7 +43,7 @@ function App() {
   const [orderName, setOrderName] = useState("");
   const [orderEmail, setOrderEmail] = useState("");
   const [orderRef, setOrderRef] = useState("");
-  const [paymentStep, setPaymentStep] = useState<"payment" | "utr">("payment");
+ const [paymentStep, setPaymentStep] = useState<"details" | "payment" | "utr">("details");
   const [transactionId, setTransactionId] = useState("");
   const [utrSubmitting, setUtrSubmitting] = useState(false);
   const [reviewName, setReviewName] = useState("");
@@ -75,16 +75,49 @@ function App() {
     window.setTimeout(() => setCopied(false), 1800);
   };
 
-  const startCheckout = (planId = "silver") => {
-    setSelectedPlanId(planId);
-    setModal("checkout");
-    setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
+ const startCheckout = (planId = "silver") => {
+  setSelectedPlanId(planId);
+  setPaymentStep("details");
+  setOrderName("");
+  setOrderEmail("");
+  setTransactionId("");
+  setModal("checkout");
+  setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
+};
+   cconst submitOrder = async () => {
+  if (!orderName.trim() || !orderEmail.trim()) {
+    alert("Please enter your name and email.");
+    return;
+  }
+
+  const orderData = {
+    orderId: orderRef,
+    name: orderName.trim(),
+    email: orderEmail.trim(),
+    plan: selectedPlan.name,
+    amount: selectedPlan.price,
   };
 
-   const submitOrder = async () => {
-    if (!orderName.trim() || !orderEmail.trim()) {
-      alert("Please enter your name and email.");
-      return;
+  localStorage.setItem("mekden-pending-order", JSON.stringify(orderData));
+
+  try {
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify(orderData),
+      }
+    );
+
+    setPaymentStep("payment");
+  } catch (error) {
+    alert("Order submission failed. Please try again.");
+  }
+};
     }
 
     const orderData = {
@@ -698,191 +731,170 @@ function App() {
       </footer>
 
       {modal === "checkout" && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onMouseDown={(e) => {
-            if (e.target === e.currentTarget) setModal(null);
-          }}
-        >
-          <div
-            className="checkout-modal"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="checkout-title"
+  <div
+    className="modal-backdrop"
+    role="presentation"
+    onMouseDown={(e) => {
+      if (e.target === e.currentTarget) setModal(null);
+    }}
+  >
+    <div
+      className="checkout-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="checkout-title"
+    >
+      <button
+        className="modal-close"
+        onClick={() => setModal(null)}
+        aria-label="Close checkout"
+      >
+        <X />
+      </button>
+
+      <div className="eyebrow">
+        <span className="eyebrow-line" /> SECURE ORDER REQUEST
+      </div>
+
+      <h2 id="checkout-title">
+        Your creator
+        <br />
+        <em>starter pack.</em>
+      </h2>
+
+      <div className="checkout-summary">
+        <span>{selectedPlan.name} · Creator Starter Pack</span>
+        <strong>₹{selectedPlan.price}</strong>
+      </div>
+
+      <div className="checkout-discount">
+        <span className="old-price">₹{selectedPlan.originalPrice}</span>
+        <b>{selectedPlan.savings}</b>
+      </div>
+
+      {paymentStep === "details" && (
+        <>
+          <label>
+            Your name
+            <input
+              value={orderName}
+              onChange={(e) => setOrderName(e.target.value)}
+              placeholder="Enter your name"
+            />
+          </label>
+
+          <label>
+            Email for delivery
+            <input
+              type="email"
+              value={orderEmail}
+              onChange={(e) => setOrderEmail(e.target.value)}
+              placeholder="you@example.com"
+            />
+          </label>
+
+          <button
+            type="button"
+            className="button button-dark full-button"
+            onClick={submitOrder}
+            disabled={!orderName.trim() || !orderEmail.trim()}
+            style={{ width: "100%", marginTop: "16px" }}
           >
-            <button
-              className="modal-close"
-              onClick={() => setModal(null)}
-              aria-label="Close checkout"
-            >
-              <X />
-            </button>
+            Continue to Payment <ArrowRight size={17} />
+          </button>
+        </>
+      )}
 
-            <div className="eyebrow">
-              <span className="eyebrow-line" /> SECURE ORDER REQUEST
+      {paymentStep === "payment" && (
+        <>
+          <div className="upi-panel">
+            <div className="upi-panel-head">
+              <span>UPI PAYMENT</span>
+              <span className="setup-tag">READY TO PAY</span>
             </div>
 
-            <h2 id="checkout-title">
-              Your creator
-              <br />
-              <em>starter pack.</em>
-            </h2>
+            <p>
+              Pay exactly <b>₹{selectedPlan.price}</b> using any UPI app.
+            </p>
 
-            <div className="checkout-summary">
-              <span>{selectedPlan.name} · Creator Starter Pack</span>
-              <strong>₹{selectedPlan.price}</strong>
+            <div className="upi-id">
+              {STORE_CONFIG.upiId}
+              <button type="button" onClick={copyUpi}>
+                {copied ? <Check size={16} /> : "Copy"}
+              </button>
             </div>
 
-            <div className="checkout-discount">
-              <span className="old-price">₹{selectedPlan.originalPrice}</span>
-              <b>{selectedPlan.savings}</b>
-            </div>
-
-            <label>
-              Your name
-              <input
-                value={orderName}
-                onChange={(e) => setOrderName(e.target.value)}
-                placeholder="Enter your name"
-              />
-            </label>
-
-            <label>
-              Email for delivery
-              <input
-                type="email"
-                value={orderEmail}
-                onChange={(e) => setOrderEmail(e.target.value)}
-                placeholder="you@example.com"
-              />
-            </label>
-
-<div className="upi-panel">
-  <div className="upi-panel-head">
-    <span>UPI PAYMENT</span>
-    <span className="setup-tag">
-      {STORE_CONFIG.upiId ? "READY TO PAY" : "SETUP REQUIRED"}
-    </span>
-  </div>
-
-  {STORE_CONFIG.upiId ? (
-    <>
-      <p>
-        Pay exactly <b>₹{selectedPlan.price}</b> using UPI:
-      </p>
-
-      <div className="upi-id">
-        {STORE_CONFIG.upiId}
-        <button onClick={copyUpi}>
-          {copied ? <Check size={16} /> : "Copy"}
-        </button>
-      </div>
-
-      <div className="upi-qr">
-        <p>Scan QR to pay</p>
-        <img
-          src="/Mekden-Website/fam-new-qr-cropped.png"
-          alt="Mekden Works UPI QR Code"
-          style={{
-            width: "190px",
-            height: "190px",
-            objectFit: "contain",
-            display: "block",
-            margin: "12px auto"
-          }}
-        />
-        <p className="small-warning">
-          iPhone and Mac users can scan this QR code using another device.
-        </p>
-      </div>
-    </>
-  ) : (
-    <p className="setup-message">
-      UPI ID configure karne ke baad payment details yahan dikhenge.
-    </p>
-  )}
-
-  <p className="small-warning">
-    Payment screenshot alone is not confirmation. Verify the actual
-    received transaction in your UPI app before delivery.
-  </p>
-</div>
-
-{STORE_CONFIG.upiId && (
-  <>
-    {paymentStep === "payment" ? (
-      <>
-        <button
-          type="button"
-          className="button button-dark full-button"
-          onClick={submitOrder}
-          disabled={!orderName.trim() || !orderEmail.trim()}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "10px",
-            width: "100%",
-            opacity: !orderName.trim() || !orderEmail.trim() ? 0.5 : 1,
-          }}
-        >
-          Pay Now ₹{selectedPlan.price} <ArrowRight size={17} />
-        </button>
-
-        <button
-          type="button"
-          className="button button-outline full-button"
-          onClick={() => setPaymentStep("utr")}
-          style={{ width: "100%", marginTop: "10px" }}
-        >
-          I've Completed Payment
-        </button>
-      </>
-    ) : (
-      <div style={{ marginTop: "16px" }}>
-        <label htmlFor="transactionId">
-          UPI Transaction ID / UTR
-        </label>
-
-        <input
-          id="transactionId"
-          type="text"
-          value={transactionId}
-          onChange={(e) => setTransactionId(e.target.value)}
-          placeholder="Enter your UTR number"
-          style={{ width: "100%", marginTop: "8px" }}
-        />
-
-        <button
-          type="button"
-          className="button button-dark full-button"
-          onClick={submitTransactionId}
-          disabled={utrSubmitting || !transactionId.trim()}
-          style={{ width: "100%", marginTop: "12px" }}
-        >
-          {utrSubmitting ? "Submitting..." : "Submit Transaction ID"}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setPaymentStep("payment")}
-          style={{ marginTop: "10px" }}
-        >
-          Back to Payment
-        </button>
-      </div>
-    )}
-  </>
-)}
-<p className="modal-footnote">
-  Order reference: {orderRef} · Preview checkout only. Verify payment in your UPI app before arranging delivery.
-</p>
+            <p className="small-warning">
+              Open your UPI app, enter the UPI ID above, and pay the exact
+              amount. Keep your UTR and payment screenshot ready.
+            </p>
           </div>
+
+          <button
+            type="button"
+            className="button button-dark full-button"
+            onClick={() => setPaymentStep("utr")}
+            style={{ width: "100%", marginTop: "16px" }}
+          >
+            I've Completed Payment <ArrowRight size={17} />
+          </button>
+
+          <button
+            type="button"
+            className="button button-outline full-button"
+            onClick={() => setPaymentStep("details")}
+            style={{ width: "100%", marginTop: "10px" }}
+          >
+            Back
+          </button>
+        </>
+      )}
+
+      {paymentStep === "utr" && (
+        <div style={{ marginTop: "16px" }}>
+          <label htmlFor="transactionId">
+            UPI Transaction ID / UTR
+          </label>
+
+          <input
+            id="transactionId"
+            type="text"
+            value={transactionId}
+            onChange={(e) => setTransactionId(e.target.value)}
+            placeholder="Enter your UTR number"
+            style={{ width: "100%", marginTop: "8px" }}
+          />
+
+          <p className="small-warning">
+            Enter the transaction reference from your UPI payment history.
+          </p>
+
+          <button
+            type="button"
+            className="button button-dark full-button"
+            onClick={submitTransactionId}
+            disabled={utrSubmitting || !transactionId.trim()}
+            style={{ width: "100%", marginTop: "12px" }}
+          >
+            {utrSubmitting ? "Submitting..." : "Submit Payment Details"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setPaymentStep("payment")}
+            style={{ marginTop: "10px" }}
+          >
+            Back to Payment
+          </button>
         </div>
       )}
+
+      <p className="modal-footnote">
+        Order reference: {orderRef} · Your order will be delivered after
+        payment verification.
+      </p>
     </div>
-  );
-}
+  </div>
+)}
 
 export default App;
