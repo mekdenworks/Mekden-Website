@@ -45,6 +45,7 @@ function App() {
   const [orderRef, setOrderRef] = useState("");
  const [paymentStep, setPaymentStep] = useState<"details" | "payment" | "utr">("details");
   const [transactionId, setTransactionId] = useState("");
+  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
   const [utrSubmitting, setUtrSubmitting] = useState(false);
   const [reviewName, setReviewName] = useState("");
   const [reviewText, setReviewText] = useState("");
@@ -130,16 +131,21 @@ function App() {
     }
   };
 
-  const submitTransactionId = async () => {
-    const utr = transactionId.trim();
+ <label htmlFor="paymentScreenshot" style={{ display: "block", marginTop: "16px" }}>
+  Payment Screenshot
+</label>
 
-    if (!/^[A-Za-z0-9]{10,22}$/.test(utr)) {
-      alert("Please enter a valid UPI Transaction ID / UTR.");
-      return;
-    }
+<input
+  id="paymentScreenshot"
+  type="file"
+  accept="image/png,image/jpeg,image/webp"
+  onChange={(e) => setScreenshotFile(e.target.files?.[0] ?? null)}
+  style={{ width: "100%", marginTop: "8px" }}
+/>
 
-    setUtrSubmitting(true);
-
+<p className="small-warning">
+  Upload PNG, JPG or WEBP. Maximum file size: 5 MB.
+</p>
     try {
       await fetch(
         "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
@@ -849,6 +855,24 @@ function App() {
           <p className="small-warning">
             Enter the transaction reference from your UPI payment history.
           </p>
+          <label
+  htmlFor="paymentScreenshot"
+  style={{ display: "block", marginTop: "16px" }}
+>
+  Payment Screenshot
+</label>
+
+<input
+  id="paymentScreenshot"
+  type="file"
+  accept="image/png,image/jpeg,image/webp"
+  onChange={(e) => setScreenshotFile(e.target.files?.[0] ?? null)}
+  style={{ width: "100%", marginTop: "8px" }}
+/>
+
+<p className="small-warning">
+  Upload PNG, JPG or WEBP. Maximum file size: 5 MB.
+</p>
 
           <button
             type="button"
