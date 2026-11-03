@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import {
   ArrowRight, ArrowUpRight, Check, ChevronDown, Instagram,
   Menu, ShieldCheck, Sparkles, X, Zap
@@ -68,56 +68,34 @@ function App() {
   };
 
   
-  const copyUpi = async () => {
+   const copyUpi = async () => {
     if (!STORE_CONFIG.upiId) return;
-    await navigator.clipboard.writeText(STORE_CONFIG.upiId);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+
+    try {
+      await navigator.clipboard.writeText(STORE_CONFIG.upiId);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      alert("Could not copy UPI ID. Please copy it manually.");
+    }
   };
 
- const startCheckout = (planId = "silver") => {
-  setSelectedPlanId(planId);
-  setPaymentStep("details");
-  setOrderName("");
-  setOrderEmail("");
-  setTransactionId("");
-  setModal("checkout");
-  setOrderRef("MW-" + Math.random().toString(36).slice(2, 8).toUpperCase());
-};
-   cconst submitOrder = async () => {
-  if (!orderName.trim() || !orderEmail.trim()) {
-    alert("Please enter your name and email.");
-    return;
-  }
-
-  const orderData = {
-    orderId: orderRef,
-    name: orderName.trim(),
-    email: orderEmail.trim(),
-    plan: selectedPlan.name,
-    amount: selectedPlan.price,
-  };
-
-  localStorage.setItem("mekden-pending-order", JSON.stringify(orderData));
-
-  try {
-    await fetch(
-      "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
-      {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8",
-        },
-        body: JSON.stringify(orderData),
-      }
+  const startCheckout = (planId = "silver") => {
+    setSelectedPlanId(planId);
+    setPaymentStep("details");
+    setOrderName("");
+    setOrderEmail("");
+    setTransactionId("");
+    setModal("checkout");
+    setOrderRef(
+      "MW-" + Math.random().toString(36).slice(2, 8).toUpperCase()
     );
+  };
 
-    setPaymentStep("payment");
-  } catch (error) {
-    alert("Order submission failed. Please try again.");
-  }
-};
+  const submitOrder = async () => {
+    if (!orderName.trim() || !orderEmail.trim()) {
+      alert("Please enter your name and email.");
+      return;
     }
 
     const orderData = {
@@ -128,11 +106,14 @@ function App() {
       amount: selectedPlan.price,
     };
 
-    localStorage.setItem("mekden-pending-order", JSON.stringify(orderData));
+    localStorage.setItem(
+      "mekden-pending-order",
+      JSON.stringify(orderData)
+    );
 
     try {
       await fetch(
-        "https://script.google.com/macros/s/AKfycbwAla1H1NjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+        "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
         {
           method: "POST",
           mode: "no-cors",
@@ -143,14 +124,13 @@ function App() {
         }
       );
 
-      const upiLink = `upi://pay?pa=${encodeURIComponent(STORE_CONFIG.upiId)}&pn=${encodeURIComponent("Mekden Works")}&am=${Number(selectedPlan.price).toFixed(2)}&cu=INR&tn=${encodeURIComponent(`Creator Starter Pack - ${selectedPlan.name} - ${orderRef}`)}`;
-
-      window.location.href = upiLink;
-    } catch (error) {
+      setPaymentStep("payment");
+    } catch {
       alert("Order submission failed. Please try again.");
     }
   };
-    const submitTransactionId = async () => {
+
+  const submitTransactionId = async () => {
     const utr = transactionId.trim();
 
     if (!/^[A-Za-z0-9]{10,22}$/.test(utr)) {
@@ -162,7 +142,7 @@ function App() {
 
     try {
       await fetch(
-        "https://script.google.com/macros/s/AKfycbwAla1H1NjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+        "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
         {
           method: "POST",
           mode: "no-cors",
@@ -179,14 +159,15 @@ function App() {
 
       alert("Transaction ID submitted. Payment is pending verification.");
       setTransactionId("");
-      setPaymentStep("payment");
-    } catch (error) {
+      setModal(null);
+      setPaymentStep("details");
+    } catch {
       alert("Submission failed. Please try again.");
     } finally {
       setUtrSubmitting(false);
     }
   };
-  const submitReview = (event: React.FormEvent<HTMLFormElement>) => {
+  const submitReview = (event: FormEvent<HTMLFormElement>)
     event.preventDefault();
 
     const next = [
@@ -895,6 +876,9 @@ function App() {
       </p>
     </div>
   </div>
-)}
+      )}
+    </div>
+  );
+}
 
 export default App;
