@@ -167,7 +167,7 @@ function App() {
       setUtrSubmitting(false);
     }
   };
-  const submitReview = (event: FormEvent<HTMLFormElement>)
+ const submitReview = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const next = [
