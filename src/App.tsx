@@ -125,54 +125,67 @@ function App() {
         }
       );
 
-      setPaymentStep("payment");
-    } catch {
-      alert("Order submission failed. Please try again.");
-    }
-  };
+const submitTransactionId = async () => {
+  const utr = transactionId.trim();
 
- <label htmlFor="paymentScreenshot" style={{ display: "block", marginTop: "16px" }}>
-  Payment Screenshot
-</label>
+  if (!/^[A-Za-z0-9]{10,22}$/.test(utr)) {
+    alert("Please enter a valid UPI Transaction ID / UTR.");
+    return;
+  }
 
-<input
-  id="paymentScreenshot"
-  type="file"
-  accept="image/png,image/jpeg,image/webp"
-  onChange={(e) => setScreenshotFile(e.target.files?.[0] ?? null)}
-  style={{ width: "100%", marginTop: "8px" }}
-/>
+  if (!screenshotFile) {
+    alert("Please upload your payment screenshot.");
+    return;
+  }
 
-<p className="small-warning">
-  Upload PNG, JPG or WEBP. Maximum file size: 5 MB.
-</p>
-    try {
-      await fetch(
-        "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
-        {
-          method: "POST",
-          mode: "no-cors",
-          headers: {
-            "Content-Type": "text/plain;charset=utf-8",
-          },
-          body: JSON.stringify({
-            action: "submitUtr",
-            orderId: orderRef,
-            transactionId: utr,
-          }),
-        }
-      );
+  if (!["image/png", "image/jpeg", "image/webp"].includes(screenshotFile.type)) {
+    alert("Please upload a PNG, JPG or WEBP image.");
+    return;
+  }
 
-      alert("Transaction ID submitted. Payment is pending verification.");
-      setTransactionId("");
-      setModal(null);
-      setPaymentStep("details");
-    } catch {
-      alert("Submission failed. Please try again.");
-    } finally {
-      setUtrSubmitting(false);
-    }
-  };
+  if (screenshotFile.size > 5 * 1024 * 1024) {
+    alert("Screenshot must be 5 MB or smaller.");
+    return;
+  }
+
+  setUtrSubmitting(true);
+
+  try {
+    const screenshotData = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("Could not read screenshot."));
+      reader.readAsDataURL(screenshotFile);
+    });
+
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify({
+          action: "submitUtr",
+          orderId: orderRef,
+          transactionId: utr,
+          screenshotData,
+        }),
+      }
+    );
+
+    alert("Payment details submitted. Pending verification.");
+    setTransactionId("");
+    setScreenshotFile(null);
+    setModal(null);
+    setPaymentStep("details");
+  } catch {
+    alert("Submission failed. Please try again.");
+  } finally {
+    setUtrSubmitting(false);
+  }
+};
  const submitReview = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
