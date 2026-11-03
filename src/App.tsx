@@ -20,7 +20,7 @@ const PRODUCT_FILES = [
 const STORE_CONFIG = {
   originalPrice: 299,
   salePrice: 149,
-  upiId: "mekden.arya@fam",
+  upiId: "7000064491@fam",
   payeeName: "Mekden Works",
   instagramUrl: "https://www.instagram.com/mekdenworks/",
   contactEmail: "mekdenworks@gmail.com",
@@ -782,7 +782,7 @@ function App() {
       <div className="upi-qr">
         <p>Scan QR to pay</p>
         <img
-          src="/Mekden-Website/mekden_qr_cropped.png"
+          src="/Mekden-Website/fam-new-qr.png"
           alt="Mekden Works UPI QR Code"
           style={{
             width: "190px",
