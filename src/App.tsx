@@ -115,7 +115,7 @@ function App() {
 
     try {
       await fetch(
-        "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+        "https://script.google.com/macros/s/AKfycbwT1_rSbyuvUDM8lslXYh_v14bc2uwIVY4YBO3usk3VfiwVSmMRVjeq2XiOt1e4CPFfqw/exec",
         {
           method: "POST",
           mode: "no-cors",
@@ -166,7 +166,7 @@ function App() {
     });
 
     await fetch(
-      "https://script.google.com/macros/s/AKfycbwAla1HNjgRmgO8J4ErtuEpBsN-JI6bhEV0iD7OcR5QXWjFLJbRLmiMgbxEfI2OPBdcw/exec",
+      "https://script.google.com/macros/s/AKfycbwT1_rSbyuvUDM8lslXYh_v14bc2uwIVY4YBO3usk3VfiwVSmMRVjeq2XiOt1e4CPFfqw/exec",
       {
         method: "POST",
         mode: "no-cors",
