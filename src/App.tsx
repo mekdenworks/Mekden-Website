@@ -301,28 +301,6 @@ const submitReview = async (e: React.FormEvent<HTMLFormElement>) => {
       }),
     });
 
-    const result = await response.json();
-
-    if (!result.success) {
-      alert(result.message || "Review submission failed.");
-      return;
-    }
-
-    alert("Review submitted! It will appear after approval.");
-
-    setReviewName("");
-    setReviewEmail("");
-    setReviewOrderId("");
-    setReviewText("");
-    setReviewRating("5");
-
-  } catch (error) {
-    console.error("Review submission error:", error);
-    alert("Could not submit review. Please try again.");
-  }
-};
-
-
   const result = await response.json();
 
   if (!result.success) {
@@ -710,8 +688,8 @@ const submitReview = async (e: React.FormEvent<HTMLFormElement>) => {
               </button>
 
               <small>
-                Feedback is saved in this browser only. It is not automatically
-                published to other visitors.
+               Reviews are submitted for approval before being published.
+Verified Buyer labels are shown only for confirmed orders.
               </small>
             </form>
 
