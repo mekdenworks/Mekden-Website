@@ -1,11 +1,13 @@
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import {
   ArrowRight, ArrowUpRight, Check, ChevronDown, Instagram,
   Menu, ShieldCheck, Sparkles, X, Zap
 } from "lucide-react";
 
 const ASSET_BASE = import.meta.env.BASE_URL;
+const REVIEW_API_URL =
+  "https://script.google.com/macros/s/AKfycbxDYNtmIPrT77SQaSnDMOtVoVDINTBr_uOtzgr9WgjlfuUC1BivHVHXcBmsMeNb9jeN/exec";
 
 const PRODUCT_FILES = [
   {
@@ -112,15 +114,31 @@ function App() {
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState("5");
 
-  const [reviews, setReviews] = useState(() => {
+const [reviews, setReviews] = useState<
+  { name: string; text: string; rating: number; date: string; verified: boolean }[]
+>([]);
+
+const [reviewEmail, setReviewEmail] = useState("");
+const [reviewOrderId, setReviewOrderId] = useState("");
+const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  
+useEffect(() => {
+  const loadReviews = async () => {
     try {
-      return JSON.parse(
-        localStorage.getItem("mekden-community-feedback") || "[]"
-      ) as { name: string; text: string; rating: number; date: string }[];
-    } catch {
-      return [];
+      const response = await fetch(REVIEW_API_URL);
+      const data = await response.json();
+
+      if (data.success) {
+        setReviews(data.reviews || []);
+      }
+    } catch (error) {
+      console.error("Reviews loading failed:", error);
     }
-  });
+  };
+
+  loadReviews();
+}, []);
+
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -254,30 +272,76 @@ function App() {
     setUtrSubmitting(false);
   }
 };
- const submitReview = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
 
-    const next = [
-      {
-        name: reviewName.trim(),
-        text: reviewText.trim(),
-        rating: Number(reviewRating),
-        date: new Date().toLocaleDateString("en-IN"),
+const submitReview = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  if (
+    !reviewName.trim() ||
+    !reviewEmail.trim() ||
+    !reviewOrderId.trim() ||
+    !reviewText.trim()
+  ) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  try {
+    const response = await fetch(REVIEW_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
       },
-      ...reviews,
-    ];
+      body: JSON.stringify({
+        name: reviewName.trim(),
+        email: reviewEmail.trim(),
+        orderId: reviewOrderId.trim(),
+        rating: Number(reviewRating),
+        text: reviewText.trim(),
+      }),
+    });
 
-    setReviews(next);
-    localStorage.setItem(
-      "mekden-community-feedback",
-      JSON.stringify(next)
-    );
+    const result = await response.json();
+
+    if (!result.success) {
+      alert(result.message || "Review submission failed.");
+      return;
+    }
+
+    alert("Review submitted! It will appear after approval.");
 
     setReviewName("");
+    setReviewEmail("");
+    setReviewOrderId("");
     setReviewText("");
     setReviewRating("5");
-  };
 
+  } catch (error) {
+    console.error("Review submission error:", error);
+    alert("Could not submit review. Please try again.");
+  }
+};
+
+
+  const result = await response.json();
+
+  if (!result.success) {
+    alert(result.message || "Review submission failed.");
+    return;
+  }
+
+  alert("Review submitted! It will appear after approval.");
+
+  setReviewName("");
+  setReviewEmail("");
+  setReviewOrderId("");
+  setReviewText("");
+  setReviewRating("5");
+} catch (error) {
+  console.error(error);
+  alert("Review submission failed. Please try again.");
+}
+};
   return (
     <div className="site-shell">
       <div className="announcement">
@@ -593,6 +657,26 @@ function App() {
                   placeholder="Your name"
                 />
               </label>
+              <label>
+  Your email
+  <input
+    required
+    type="email"
+    value={reviewEmail}
+    onChange={(e) => setReviewEmail(e.target.value)}
+    placeholder="Email used for purchase"
+  />
+</label>
+
+<label>
+  Your Order ID
+  <input
+    required
+    value={reviewOrderId}
+    onChange={(e) => setReviewOrderId(e.target.value)}
+    placeholder="Enter your Order ID"
+  />
+</label>
 
               <label>
                 Your rating
@@ -654,7 +738,9 @@ function App() {
                     <p>“{review.text}”</p>
                     <div className="review-meta">
                       <b>{review.name}</b>
-                      <span>{review.date} · Unverified feedback</span>
+                     <span>
+  {review.date} · {review.verified ? "✓ Verified Buyer" : "Customer Feedback"}
+</span>
                     </div>
                   </article>
                 ))
