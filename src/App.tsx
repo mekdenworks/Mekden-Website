@@ -8,28 +8,89 @@ import {
 const ASSET_BASE = import.meta.env.BASE_URL;
 
 const PRODUCT_FILES = [
-  { name: "100 Reel Hooks", file: "01-100-Reel-Hooks.pdf", detail: "Scroll-stopping opening lines to help your Reels earn attention." },
-  { name: "100 Content Ideas", file: "02-100-Content-Ideas.pdf", detail: "A ready-to-use bank of ideas for your next posts and videos." },
-  { name: "30-Day Content Calendar", file: "03-30-Day-Content-Calendar.pdf", detail: "A practical month-long structure for consistent publishing." },
-  { name: "50 Reel Scripts", file: "04-50-Reel-Scripts.pdf", detail: "Script frameworks to make planning and recording easier." },
-  { name: "100 Caption + CTA Bank", file: "05-100-Caption-CTA-Bank.pdf", detail: "Caption and call-to-action inspiration for your content." },
-  { name: "Instagram Profile Optimization Guide", file: "06-Instagram-Profile-Optimization-Guide.pdf", detail: "Improve the clarity and structure of your Instagram profile." },
-  { name: "Creator Growth & Posting System", file: "07-Creator-Growth-Posting-System.pdf", detail: "A repeatable system for planning, posting and reviewing content." },
+  {
+    name: "Content Starter Pack",
+    file: "creator-starter-pack",
+    detail: "Your essential creator toolkit to get started."
+  },
+  {
+    name: "100 Reel Hooks",
+    file: "01-100-Reel-Hooks.pdf",
+    detail: "Scroll-stopping opening lines to help your Reels earn attention."
+  },
+  {
+    name: "100 Content Ideas",
+    file: "02-100-Content-Ideas.pdf",
+    detail: "A ready-to-use bank of ideas for your next posts and videos."
+  },
+  {
+    name: "30-Day Content Calendar",
+    file: "03-30-Day-Content-Calendar.pdf",
+    detail: "A practical month-long structure for consistent publishing."
+  },
+  {
+    name: "50 Reel Scripts",
+    file: "04-50-Reel-Scripts.pdf",
+    detail: "Script frameworks to make planning and recording easier."
+  },
+  {
+    name: "100 Caption + CTA Bank",
+    file: "05-100-Caption-CTA-Bank.pdf",
+    detail: "Caption and call-to-action inspiration for your content."
+  },
+  {
+    name: "Instagram Profile Optimization Guide",
+    file: "06-Instagram-Profile-Optimization-Guide.pdf",
+    detail: "Improve the clarity and structure of your Instagram profile."
+  },
+  {
+    name: "Creator Growth & Posting System",
+    file: "07-Creator-Growth-Posting-System.pdf",
+    detail: "A repeatable system for planning, posting and reviewing content."
+  },
+  {
+    name: "30-Day Creator Performance Tracker",
+    file: "bonus-creator-performance-tracker",
+    detail: "Track your content performance and review your progress."
+  },
 ];
-
 const STORE_CONFIG = {
   originalPrice: 299,
   salePrice: 149,
-  upiId: "7000064491@fam",
+  upiId: "mekdenarya@fam",
   payeeName: "Mekden Works",
   instagramUrl: "https://www.instagram.com/mekdenworks/",
   contactEmail: "mekdenworks@gmail.com",
 };
-
 const PLANS = [
-  { id: "bronze", name: "Bronze", price: 99, originalPrice: 129, savings: "SAVE 23%", count: 3, description: "A focused starting point for your content." },
-  { id: "silver", name: "Silver", price: 149, originalPrice: 249, savings: "SAVE 40%", count: 5, description: "More tools for planning and creating consistently.", popular: true },
-  { id: "gold", name: "Gold", price: 199, originalPrice: 399, savings: "SAVE 50%", count: 7, description: "The complete seven-resource creator system." },
+  {
+    id: "bronze",
+    name: "Bronze",
+    price: 99,
+    originalPrice: 129,
+    savings: "SAVE 23%",
+    count: 4,
+    description: "A focused starting point for your content."
+  },
+  {
+    id: "silver",
+    name: "Silver",
+    price: 149,
+    originalPrice: 249,
+    savings: "SAVE 40%",
+    count: 6,
+    description: "More tools for planning and creating consistently.",
+    popular: true
+  },
+  {
+    id: "gold",
+    name: "Gold",
+    price: 199,
+    originalPrice: 399,
+    savings: "SAVE 50%",
+    count: 9,
+    description: "The complete creator resource collection."
+  },
 ];
 
 type Modal = "checkout" | null;
@@ -387,7 +448,6 @@ function App() {
                     <div className="plan-includes-title">INCLUDED RESOURCES</div>
                     <ul className="plan-files">
                       {PRODUCT_FILES.slice(0, plan.count).map((item) => <li key={item.file}><Check size={14} />{item.name}</li>)}
-                      {plan.id === "gold" && <li className="tracker-coming"><Sparkles size={14} />30-Day Creator Performance Tracker <small>Bonus · coming soon</small></li>}
                     </ul>
                     <button className={`button ${plan.popular ? "button-gold" : "button-dark"} plan-button`} onClick={() => startCheckout(plan.id)}>
                       Choose {plan.name} <ArrowRight size={16} />
